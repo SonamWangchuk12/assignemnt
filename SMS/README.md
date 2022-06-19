@@ -1,0 +1,1 @@
+Please copy the contents from env example to env file
