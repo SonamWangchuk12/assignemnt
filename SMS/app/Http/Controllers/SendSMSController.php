@@ -40,14 +40,7 @@ class SendSMSController extends Controller
         // $url="https://api.twilio.com/2010-04-01/Accounts/ACa6bf2f76e69dd3f85f97bbf04c8dab4a:6a8074281724262385c3fba6dfce2007/Messages";
         // $client = new \GuzzleHttp\Client();
         // $client = new \GuzzleHttp\Client(['verify' => false]);
-        // $guzzleClient = new \GuzzleHttp\Client(array( 'curl' => array( CURLOPT_SSL_VERIFYPEER => false, ), ));
-        // $client->setHttpClient($guzzleClient);
-
-       
-        //
-        // $account_sid = Config::get('twilioval.account_sid');
-        // $auth_token = Config::get('twilioval.auth_token');
-        // $twilio_number = Config::get('twilioval.twilio_number');
+        
 
         $account_sid = env("TWILIO_SID",'ACa6bf2f76e69dd3f85f97bbf04c8dab4a');
         $auth_token = env("TWILIO_AUTH_TOKEN",'6a8074281724262385c3fba6dfce2007');
@@ -59,8 +52,9 @@ class SendSMSController extends Controller
         $allnumbers=$request->mobile_number;
         $numbers = explode(',', $allnumbers);
         // dd($account_sid);
+        $client = new Client($account_sid, $auth_token);
         foreach($numbers as $number) {
-            // $mobile="+91".$number;
+            $mobile="+91".$number;
 
             // $send_request = $client->request("POST",$url,[
                 // 'form_params' => [
@@ -68,11 +62,23 @@ class SendSMSController extends Controller
                 // ]
             // ]);
             // $response = $send_request->getBody()->getContents();
-             $client = new Client($account_sid, $auth_token);
-             $client->messages->create($number, 
+            // $http = new Services_Twilio_TinyHttp(
+            //     'https://api.twilio.com',
+            //     array('curlopts' => array(
+            //         CURLOPT_SSL_VERIFYPEER => true,
+            //         CURLOPT_SSL_VERIFYHOST => 2,
+            //     ))
+            // );
+            
+            // $client = new Services_Twilio($sid, $token, "2010-04-01", $http);
+            
+            $client2= $client->messages->create($mobile, 
             ['from' => $twilio_number, 'body' => 'Test assignment'] );
+            dd($client2);
           }
         // dd($numbers);
+        return redirect()->back()->with('message', 'Message Delivered Successfully');
+
     }
 
     /**
